@@ -10,6 +10,7 @@
     "chai": "^4.0.2",
     "connect": "^3.6.2",
     "mocha": "^3.4.2",
+    "rollup": "^0.43.0",
     "serve-static": "^1.12.3"
   },
   "devDependencies": {
@@ -21,9 +22,8 @@
   },
   "author": "George Mamaladze",
   "license": "MIT",
-  "repository" :
-  { "type" : "git"
-  , "url" : "https://github.com/gmamaladze/deep-snake"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gmamaladze/deep-snake"
   }
-
 }
