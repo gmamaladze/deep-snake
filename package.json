@@ -17,9 +17,13 @@
   },
   "scripts": {
     "test": "mocha",
-    "pretest": "rollup src/index.js --format umd --name deepsnake --output build/deepsnake.js",
-    "prepublish": "rollup src/index.js --format umd --name deepsnake --output build/js/deepsnake.js; cp -r static/* build"
+    "postinstall": "rollup src/index.js --format umd --name deepsnake --output build/js/deepsnake.js; cp -r static/* build"
   },
   "author": "George Mamaladze",
-  "license": "ISC"
+  "license": "MIT",
+  "repository" :
+  { "type" : "git"
+  , "url" : "https://github.com/gmamaladze/deep-snake"
+  }
+
 }
