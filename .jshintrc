@@ -1,0 +1,24 @@
+{
+  "globals"   : {
+    "describe"   : false,
+    "it"         : false,
+    "before"     : false,
+    "beforeEach" : false,
+    "after"      : false,
+    "afterEach"  : false
+  },
+  "camelcase": true,
+  "curly": true,
+  "eqeqeq": true,
+  "freeze": true,
+  "indent": 2,
+  "latedef": true,
+  "laxcomma": true,
+  "node": true,
+  "trailing": true,
+  "strict": true,
+  "unused": "vars",
+  "undef": true,
+  "esversion": 6,
+  "latedef" : "nofunc"
+}

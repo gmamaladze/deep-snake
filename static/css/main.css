@@ -1,0 +1,55 @@
+body {
+    font-family: sans-serif;
+}
+
+.snake {
+    stroke: #E5E5E5;
+    fill: #555;
+}
+
+.food {
+    stroke: #555;
+    fill: black;
+}
+
+.box {
+    border: 1px solid #E5E5E5;
+}
+
+.container {
+    width: 800px;
+    float:none;
+    vertical-align:middle;
+    text-align: center;
+    margin: auto;
+}
+
+.text {
+    width: 800px;
+    float:none;
+    vertical-align:middle;
+    text-align: left;
+    margin: auto;
+}
+
+.left {
+    padding: 5px;
+    margin: 10px;
+    display: inline-block;
+}
+
+span {
+    display: block;
+    vertical-align:middle;
+    text-align: center;
+    padding: 5px;
+}
+
+p {
+    text-align: left;
+}
+
+.right {
+    float: left;
+    display: inline;
+}

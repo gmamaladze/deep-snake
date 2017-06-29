@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<!--suppress ES6ModulesDependencies -->
+<html>
+
+<head>
+    <title>Deep Snake</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css"/>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Deep Snake</h1>
+    <p>NOTE: The page will only run correctly in ES6 compatible (newer) browsers.</p>
+</div>
+
+
+<div class="container">
+    <div id="yours" class="box left">
+        <span>this is YOU. use arrows to play.</span>
+    </div>
+    <div id="simulation" class="box left">
+        <span>this is a TEACHER.</span>
+    </div>
+    <div id="ai" class="box left">
+        <span>this is our AI being trained.</span>
+    </div>
+    <div id="stats" class="box left">
+        <span>learning PROGRESS.</span>
+    </div>
+</div>
+
+<div class="text">
+    <h2>What is this</h2>
+    <p>
+        My goal was to create a simple demo of deep learning which is:
+    <ul>
+        <li>
+            very small, but still funny
+        </li>
+        <li>
+            not too artificial
+        </li>
+        <li>
+            demonstrating learning effect in minutes
+        </li>
+        <li>
+            easy to read and modify
+        </li>
+    </ul>
+    </p>
+    <p>
+        Basically is is a toy. You can see how the snake is trained and gets gradually better an better.
+        The whole deep learning "magic" is happening in your browser. By reloading the page you are wiping Snake's
+        "brain". The whole code including visualization and the logic is less then 500 lines.
+    </p>
+    <h2>Frameworks Used</h2>
+    <p>
+    <ul>
+        <li>
+            <a href="http://cs.stanford.edu/people/karpathy/convnetjs/">ConNetJS</a> - for deep learning.
+        </li>
+        <li>
+            <a href="https://d3js.org/">D3.js</a> - for visualization.
+        </li>
+    </ul>
+    </p>
+</div>
+
+
+<script src="http://d3js.org/d3.v4.min.js"></script>
+<script src="http://cs.stanford.edu/people/karpathy/convnetjs/build/convnet-min.js"></script>
+<script src="js/deepsnake.js"></script>
+<script>
+
+    const interval = 100;
+    const palette = d3.schemeCategory10;
+    const blue = palette[0];
+    const orange = palette[1];
+    const green = palette[2];
+    const red = palette[3];
+
+
+    (function you() {
+        let controls = new deepsnake.Controls();
+        let game = new deepsnake.Game();
+        let grid = new deepsnake.Grid("#yours").color(blue, green);
+
+        function loop() {
+            let decision = controls.value;
+            game.tick(decision, function draw(cells) {
+                grid.draw(cells);
+            });
+            setTimeout(loop, interval);
+        }
+
+        loop();
+    })();
+
+    (function simulator() {
+        let game = new deepsnake.Game();
+        let grid = new deepsnake.Grid("#simulation").color(orange, green);
+
+        function loop() {
+            let decision = game.hint();
+            game.tick(decision, function draw(cells) {
+                grid.draw(cells);
+            });
+            setTimeout(loop, interval);
+        }
+
+        loop();
+    })();
+
+    let brain = new deepsnake.Brain();
+
+    (function trainer(brain) {
+        let game = new deepsnake.Game();
+
+        function loop() {
+            let decision = game.hint();
+            brain.reward(game.state2(), decision);
+            game.tick(decision);
+            setTimeout(loop, 0);
+        }
+
+        loop();
+    })(brain);
+
+    (function ai(brain) {
+        let game = new deepsnake.Game();
+        let grid = new deepsnake.Grid("#ai").color(red, green);
+
+        function loop() {
+            let decision = brain.decide(game.state2());
+            game.tick(decision, function draw(cells) {
+                grid.draw(cells);
+            });
+            setTimeout(loop, interval);
+        }
+
+        loop();
+    })(brain);
+
+
+    (function stats() {
+        let chart = new deepsnake.Chart("#stats", "loose", [240, 240], 50, 1);
+        let color = d3.scaleLinear().domain([0.15, 0.5]).interpolate(d3.interpolateHcl).range([green, orange, red]);
+
+        function loop() {
+            chart.push(brain.loss);
+            chart.color(color(chart.avg()));
+            setTimeout(loop, interval * 5);
+        }
+
+        loop();
+    })();
+
+
+</script>
+
+
+</body>
+
+</html>
