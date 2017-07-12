@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!--suppress ES6ModulesDependencies -->
+<html>
+
+<head>
+    <title>Deep Snake</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+
+<div class="container">
+    <div id="ai" class="box left">
+        <span>this is our AI being trained.</span>
+    </div>
+    <div id="stats" class="box left">
+        <span>learning PROGRESS.</span>
+    </div>
+</div>
+
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://cs.stanford.edu/people/karpathy/convnetjs/build/convnet-min.js"></script>
+<script src="js/deepsnake.js"></script>
+<script>
+
+    const interval = 100;
+    const palette = d3.schemeCategory10;
+    const orange = palette[1];
+    const green = palette[2];
+    const red = palette[3];
+
+    let brain = new deepsnake.Brain1();
+
+    (function trainer(brain) {
+        let game = new deepsnake.Game();
+
+        function loop() {
+            let state = game.state2();
+            let before = distance(state);
+
+            let decision = brain.decide(state);
+            game.tick(decision);
+
+            let after = distance(game.state2());
+            let reward = (after < before) ? 1 : 0;
+
+            brain.reward(state, decision, reward);
+
+            setTimeout(loop, 0);
+        }
+
+        function distance(state) {
+            return Math.abs(state[0] - state[2]) + Math.abs(state[1] - state[3]);
+        }
+
+        loop();
+    })(brain);
+
+    (function ai(brain) {
+        let game = new deepsnake.Game();
+        let grid = new deepsnake.Grid("#ai").color(red, green);
+
+        function loop() {
+            let decision = brain.decide(game.state2());
+            game.tick(decision, function draw(cells) {
+                grid.draw(cells);
+            });
+            setTimeout(loop, interval);
+        }
+
+        loop();
+    })(brain);
+
+    (function stats() {
+        let chart = new deepsnake.Chart("#stats", "loose", [240, 240], 50, 1);
+        let color = d3.scaleLinear().domain([0.15, 0.5]).interpolate(d3.interpolateHcl).range([green, orange, red]);
+
+        function loop() {
+            chart.push(brain.loss);
+            chart.color(color(chart.avg()));
+            setTimeout(loop, interval * 5);
+        }
+
+        loop();
+    })();
+
+
+</script>
+
+
+</body>
+
+</html>
