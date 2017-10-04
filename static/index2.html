@@ -13,6 +13,9 @@
     <div id="ai" class="box left">
         <span>this is our AI being trained.</span>
     </div>
+    <div id="weights" class="box left">
+        <span>OUTPUT.</span>
+    </div>
     <div id="stats" class="box left">
         <span>learning PROGRESS.</span>
     </div>
@@ -30,52 +33,36 @@
     const green = palette[2];
     const red = palette[3];
 
-    let trainee = new deepsnake.Brain1();
-    let player =  new deepsnake.Brain1();
-    player.epsilon = 0;
+    let trainee = new deepsnake.Brain2();
+    let player =  new deepsnake.Brain2();
 
     (function trainer(brain) {
         let game = new deepsnake.Game();
 
         function loop() {
-            let state0 = game.state2();
-            let before = distance(state0);
-
-            let decision = brain.decide(state0);
+            let decision = game.hint();
             game.tick(decision);
-
-            let state1 = game.state2();
-            let after = distance(state1);
-
-            let sameFood = (state0[0]===state1[0] && state0[1]===state1[1]);
-            let found = (state0[0]===state1[2] && state0[1]===state1[3]);
-            let reward = found || (sameFood &&  (after < before));
-            if (reward) brain.reward(state0, decision, reward);
-
+            let point = game.universe.snake.head();
+            let focus = [point.x , point.y];
+            brain.decide(game.state());
+            brain.reward(focus);
             setTimeout(loop, 0);
-        }
-
-        function distance(state) {
-            return Math.pow((state[0] - state[2]),2) * Math.pow((state[1] - state[3]), 2);
         }
 
         loop();
     })(trainee);
 
-
-    (function cloneExperience() {
-        player.cloneFrom(trainee);
-        setTimeout(cloneExperience, 5000);
-    })();
-
     (function ai(brain) {
         let game = new deepsnake.Game();
         let grid = new deepsnake.Grid("#ai").color(red, green);
+        let map =  new deepsnake.Map("#weights");
 
         function loop() {
-            let decision = brain.decide(game.state2());
+            let decision = game.hint();
             game.tick(decision, function draw(cells) {
                 grid.draw(cells);
+                let weights = brain.decide(game.state());
+                map.draw(weights);
             });
             setTimeout(loop, interval);
         }
@@ -83,18 +70,23 @@
         loop();
     })(player);
 
-    (function stats() {
+    (function cloneExperience() {
+        player.cloneFrom(trainee);
+        setTimeout(cloneExperience, 5000);
+    })();
+
+    (function stats(brain) {
         let chart = new deepsnake.Chart("#stats", "loose", [240, 240], 50, 1);
         let color = d3.scaleLinear().domain([0.15, 0.5]).interpolate(d3.interpolateHcl).range([green, orange, red]);
 
         function loop() {
-            chart.push(trainee.loss);
+            chart.push(brain.loss);
             chart.color(color(chart.avg()));
             setTimeout(loop, interval * 5);
         }
 
         loop();
-    })();
+    })(trainee);
 
 
 </script>

@@ -32,9 +32,14 @@ function Game(size = new Point(20, 20), universe =  new Universe()) {
 }
 
 function state() {
-    let cells = this.universe.getCells();
-    let output = new Array(this.size.x * this.size.y).fill(0);
-    cells.forEach( cell => output[cell.point.x + this.size.y * cell.point.y] = encodeKind(cell.being))
+    //let cells = this.universe.getCells();
+    let output = new Array(this.size.x * this.size.y).fill(UNKNOWN_CODE);
+    let f = this.universe.food.head();
+    let s = this.universe.snake.head();
+
+    output[f.y * this.size.x + f.x] =  FOOD_CODE;
+    output[s.y * this.size.x + s.x] =  SNAKE_CODE;
+    //cells.forEach( cell => output[cell.point.x + this.size.y * cell.point.y] = encodeKind(cell.being))
     return output
 }
 
@@ -59,9 +64,9 @@ function hint() {
     return [direction.x, direction.y];
 }
 
-const SNAKE_CODE = 1;
-const FOOD_CODE = 2;
-const UNKNOWN_CODE = 255;
+const SNAKE_CODE = 100;
+const FOOD_CODE = -100;
+const UNKNOWN_CODE = 0;
 
 
 function encodeKind(being) {

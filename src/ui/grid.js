@@ -56,4 +56,3 @@ Grid.prototype = {
     draw,
     color
 }
-
