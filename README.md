@@ -3,7 +3,7 @@ A snake game trained using simple deep learning implemented in client side javas
 
 ![](deep-snake2.gif)
 
-###[Demo: deep-snake.herokuapp.com](https://deep-snake.herokuapp.com/)
+### [Demo: deep-snake.herokuapp.com](https://deep-snake.herokuapp.com/)
 
 *NOTE:* The page will only run correctly in ES6 compatible (newer) browsers.
 
